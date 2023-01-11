@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const alert = require('alert');
@@ -37,11 +38,12 @@ app.post("/", (req, res) => {
 };
 
   const jsonData = JSON.stringify(data);
+  const Key = process.env.API_KEY;
 
   const url = "https://us17.api.mailchimp.com/3.0/lists/fb8e885816";
   const option = {
     method: "POST",
-    auth: "Abhay:a1057a910d843aa3708ab85b7dfcdd21-us17",
+    auth: ""+Key
   };
 
   const requests = https.request(url, option, (response) => {
