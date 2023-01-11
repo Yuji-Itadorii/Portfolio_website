@@ -64,5 +64,5 @@ app.post("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Staring on http://localhost:${port}`);
+  // console.log(`Staring on http://localhost:${port}`);
 });
