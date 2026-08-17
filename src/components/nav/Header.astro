@@ -1,0 +1,242 @@
+---
+import { Icon } from "astro-icon/components";
+import ThemeToggle from "./ThemeToggle.astro";
+import { profile, sections } from "~/content";
+---
+
+{
+  /* Sentinel: an IntersectionObserver watches this instead of listening to
+    scroll, so the header state costs nothing per frame. */
+}
+<div data-header-sentinel aria-hidden="true"></div>
+
+<header class="header" data-header>
+  <div class="header__inner u-container">
+    <a class="brand" href="#main">
+      <span class="brand__mark u-mono-figure" aria-hidden="true">AR</span>
+      <span class="brand__name">{profile.name}</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav__list">
+        {
+          sections.map((section) => (
+            <li>
+              <a class="nav__link" href={`#${section.id}`} data-nav-link={section.id}>
+                {section.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      {
+        /* The accessible name must contain the visible text ("Ctrl K"), so this
+          uses hidden text rather than an aria-label that would replace it. */
+      }
+      <button class="palette-hint" type="button" data-open-palette>
+        <Icon name="lucide:search" aria-hidden="true" />
+        <span class="visually-hidden">Open command palette,</span>
+        <kbd>Ctrl K</kbd>
+      </button>
+
+      <ThemeToggle />
+
+      <button
+        class="menu-button"
+        type="button"
+        data-open-menu
+        aria-label="Open menu"
+        aria-haspopup="dialog"
+      >
+        <Icon name="lucide:menu" aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  [data-header-sentinel] {
+    position: absolute;
+    top: 0;
+    height: 90svh;
+    width: 1px;
+    pointer-events: none;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky-nav);
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color var(--dur-base) var(--ease-out-quart),
+      border-color var(--dur-base) var(--ease-out-quart),
+      backdrop-filter var(--dur-base) var(--ease-out-quart);
+  }
+
+  /* Transparent over the hero art, solid once you've scrolled past it. */
+  .header[data-stuck] {
+    border-bottom-color: var(--border);
+    background: color-mix(in oklab, var(--surface-0) 82%, transparent);
+    backdrop-filter: blur(12px) saturate(140%);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: var(--header-h);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5625rem;
+    color: var(--text-1);
+    text-decoration: none;
+  }
+
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent-solid);
+    color: var(--accent-on);
+    font-size: var(--text-xs);
+  }
+
+  .brand__name {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  @media (min-width: 52rem) {
+    .nav {
+      display: block;
+    }
+  }
+
+  .nav__list {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .nav__link {
+    display: block;
+    padding: 0.4375rem 0.75rem;
+    border-radius: var(--radius-full);
+    color: var(--text-2);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition:
+      background-color var(--dur-fast) var(--ease-out-quart),
+      color var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .nav__link:hover {
+    background: var(--surface-2);
+    color: var(--text-1);
+  }
+
+  .nav__link[aria-current="true"] {
+    color: var(--accent);
+    background: var(--accent-wash);
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .palette-hint {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: var(--surface-1);
+    color: var(--text-3);
+    cursor: pointer;
+    transition: border-color var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .palette-hint:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .palette-hint :global(svg) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .palette-hint kbd {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: 0.04em;
+  }
+
+  @media (min-width: 64rem) {
+    .palette-hint {
+      display: inline-flex;
+    }
+  }
+
+  .menu-button {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: var(--surface-1);
+    color: var(--text-2);
+    cursor: pointer;
+  }
+
+  .menu-button :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  @media (min-width: 52rem) {
+    .menu-button {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { initScrollSpy } from "./scroll-spy";
+
+  // Header background state, driven by a sentinel rather than a scroll handler.
+  const header = document.querySelector<HTMLElement>("[data-header]");
+  const sentinel = document.querySelector<HTMLElement>("[data-header-sentinel]");
+
+  if (header && sentinel) {
+    new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        if (entry.isIntersecting) delete header.dataset.stuck;
+        else header.dataset.stuck = "";
+      },
+      { threshold: 0 },
+    ).observe(sentinel);
+  }
+
+  initScrollSpy();
+</script>

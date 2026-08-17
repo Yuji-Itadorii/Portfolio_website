@@ -1,0 +1,64 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  /** Short line above the heading. */
+  eyebrow?: string;
+  /** Optional supporting line under the heading. */
+  lede?: string;
+  /** Full-bleed sections manage their own container. */
+  bare?: boolean;
+  class?: string;
+}
+
+const { id, title, eyebrow, lede, bare = false, class: className } = Astro.props;
+const headingId = `${id}-heading`;
+---
+
+<section id={id} aria-labelledby={headingId} class:list={["section", className]}>
+  <div class:list={[!bare && "u-container"]}>
+    <header class="section__head">
+      {eyebrow && <p class="section__eyebrow">{eyebrow}</p>}
+      <h2 id={headingId}>{title}</h2>
+      {lede && <p class="section__lede u-prose">{lede}</p>}
+    </header>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--space-section);
+    scroll-margin-top: var(--header-h);
+
+    /* Every section on this page is below the fold, so the browser can skip
+       layout and paint for them until they approach the viewport. This is the
+       main lever on a long single-page document: without it the first paint
+       waits on laying out the entire ~140 KB of markup.
+
+       contain-intrinsic-size supplies a placeholder height so the scrollbar
+       and anchor offsets stay stable before a section is rendered. */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+
+  .section__head {
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .section__eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .section__lede {
+    margin-top: 1rem;
+    color: var(--text-3);
+    font-size: var(--text-lg);
+  }
+</style>

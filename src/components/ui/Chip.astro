@@ -1,0 +1,68 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  label: string;
+  /** Iconify name. Omit for a text-only chip. */
+  icon?: string;
+  note?: string;
+  emphasis?: boolean;
+  size?: "sm" | "md";
+}
+
+const { label, icon, note, emphasis = false, size = "md" } = Astro.props;
+---
+
+<span
+  class:list={["chip", `chip--${size}`, emphasis && "chip--emphasis", !icon && "chip--text"]}
+  title={note}
+>
+  {
+    /* The glyph is decorative — the visible label carries the meaning, which is
+      what the old site's 21 alt="" icons failed to do. */
+  }
+  {icon && <Icon name={icon} class="chip__icon" aria-hidden="true" />}
+  <span class="chip__label">{label}</span>
+  {note && <span class="visually-hidden">— {note}</span>}
+</span>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    padding: 0.3125rem 0.6875rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: var(--surface-1);
+    color: var(--text-2);
+    font-size: var(--text-sm);
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+
+  .chip--sm {
+    padding: 0.1875rem 0.5625rem;
+    font-size: var(--text-xs);
+  }
+
+  .chip--emphasis {
+    border-color: color-mix(in oklab, var(--accent-graphic) 42%, transparent);
+    background: var(--accent-wash);
+    color: var(--accent);
+  }
+
+  /* Deliberate typographic treatment for things with no brand mark. Reads as a
+     choice; a placeholder logo would read as a bug. */
+  .chip--text .chip__label {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    letter-spacing: -0.02em;
+  }
+
+  .chip__icon {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+  }
+</style>

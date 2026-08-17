@@ -1,0 +1,165 @@
+---
+import { Icon } from "astro-icon/components";
+import ParallaxStage from "./ParallaxStage.astro";
+import RoleRotator from "./RoleRotator.astro";
+import Button from "~/components/ui/Button.astro";
+import { profile } from "~/content";
+import { RESUME_PATH, resumeExists } from "~/lib/resume";
+---
+
+<div class="hero">
+  <ParallaxStage />
+
+  <div class="hero__content u-container">
+    <p class="hero__status">
+      <span class="hero__pulse" aria-hidden="true"></span>
+      {profile.currentRole.title} at {profile.currentRole.company}
+    </p>
+
+    <h1 class="hero__name">{profile.name}</h1>
+
+    <RoleRotator roles={profile.roles} />
+
+    <p class="hero__tagline u-prose">{profile.tagline}</p>
+
+    <div class="hero__actions">
+      <Button href="#work" variant="solid" iconEnd="lucide:chevron-right">See my work</Button>
+      {
+        resumeExists ? (
+          <Button href={RESUME_PATH} variant="outline" icon="lucide:download" download>
+            Resume
+          </Button>
+        ) : (
+          <Button href={`mailto:${profile.email}`} variant="outline" icon="lucide:mail">
+            Email me
+          </Button>
+        )
+      }
+      <Button href="#contact" variant="ghost" icon="lucide:send">Get in touch</Button>
+    </div>
+
+    <p class="hero__location">
+      <Icon name="lucide:map-pin" aria-hidden="true" />
+      {profile.location}
+    </p>
+  </div>
+
+  <div class="hero__scrim" aria-hidden="true"></div>
+</div>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    /* minmax(0, 1fr) rather than an implicit track: the role rotator uses
+       white-space: nowrap, and an auto-sized track would grow to fit its
+       longest string, pushing the whole document into horizontal overflow
+       below ~360px. */
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    /* svh, not vh — vh overflows on mobile browsers with a dynamic toolbar.
+       Minus the header, which is sticky and therefore occupies normal flow
+       above this element rather than overlaying it. */
+    min-height: calc(100svh - var(--header-h));
+    isolation: isolate;
+  }
+
+  /* Fades the artwork into the page background so the hero doesn't end on a
+     hard horizontal seam. */
+  .hero__scrim {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: var(--z-hero-fg);
+    height: 28%;
+    background: linear-gradient(to bottom, transparent, var(--surface-0) 92%);
+    pointer-events: none;
+  }
+
+  /* On mobile the art is a short band at the bottom, so a 28% scrim would
+     wash out the entire illustration rather than just softening its edge. */
+  @media (max-width: 48rem) {
+    .hero__scrim {
+      height: 9%;
+    }
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: var(--z-content);
+    padding-block: 2rem 4rem;
+    text-align: center;
+  }
+
+  .hero__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem;
+    border: 1px solid color-mix(in oklab, var(--accent-graphic) 38%, transparent);
+    border-radius: var(--radius-full);
+    background: color-mix(in oklab, var(--surface-1) 82%, transparent);
+    backdrop-filter: blur(8px);
+    color: var(--text-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.02em;
+  }
+
+  .hero__pulse {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--accent-graphic);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent-graphic) 70%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__pulse {
+      animation: pulse 2.4s var(--ease-out-quart) infinite;
+    }
+
+    @keyframes pulse {
+      70% {
+        box-shadow: 0 0 0 0.55rem transparent;
+      }
+      100% {
+        box-shadow: 0 0 0 0 transparent;
+      }
+    }
+  }
+
+  .hero__name {
+    margin-block: 1.25rem 0.5rem;
+    text-shadow: 0 2px 24px color-mix(in oklab, var(--surface-0) 70%, transparent);
+  }
+
+  .hero__tagline {
+    margin-inline: auto;
+    margin-top: 1.25rem;
+    color: var(--text-2);
+    font-size: var(--text-lg);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+
+  .hero__location {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: 2rem;
+    color: var(--text-3);
+    font-size: var(--text-sm);
+  }
+
+  .hero__location :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+</style>

@@ -1,0 +1,90 @@
+---
+interface Props {
+  roles: string[];
+}
+
+const { roles } = Astro.props;
+
+// steps() cannot read a custom property, so the step count is set inline from
+// the content array. This keeps the animation correct however many roles
+// profile.ts declares — no magic number to drift out of sync.
+const trackStyle = [
+  `--count:${roles.length}`,
+  `animation-duration: ${roles.length * 2.6}s`,
+  `animation-timing-function: steps(${roles.length})`,
+].join("; ");
+---
+
+{
+  /*
+  Replaces the old CSS typing animation, which was hardcoded to exactly two
+  strings and broke whenever the text length changed.
+
+  The full list is in the DOM and announced once via aria-label; the visual
+  cycle is aria-hidden so a screen reader doesn't read a moving target. Under
+  reduced motion the animation never starts and only the first role is visible,
+  degrading to a plain statement of what you do.
+*/
+}
+{
+  /*
+  aria-label is prohibited on a bare <p>. Rather than bolt a role onto it, the
+  full list is exposed as real visually-hidden text — which is what a screen
+  reader should encounter anyway.
+*/
+}
+<p class="rotator">
+  <span class="visually-hidden">{roles.join(". ")}</span>
+  <span class="rotator__viewport" aria-hidden="true">
+    <span class="rotator__track" style={trackStyle}>
+      {roles.map((role) => <span class="rotator__item">{role}</span>)}
+    </span>
+  </span>
+</p>
+
+<style>
+  .rotator {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: -0.015em;
+  }
+
+  .rotator__viewport {
+    display: block;
+    height: 1.5em;
+    /* Clips the vertical slide, and min-width:0 stops the nowrap items from
+       contributing their full width to intrinsic sizing further up the tree. */
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .rotator__track {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rotator__item {
+    display: block;
+    height: 1.5em;
+    line-height: 1.5em;
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .rotator__track {
+      /* steps(N) with the default jump-end yields exactly N discrete
+         positions — one hold per role — then wraps to the first. */
+      animation-name: rotate-roles;
+      animation-iteration-count: infinite;
+      animation-fill-mode: both;
+    }
+
+    @keyframes rotate-roles {
+      to {
+        translate: 0 calc(-1.5em * var(--count));
+      }
+    }
+  }
+</style>

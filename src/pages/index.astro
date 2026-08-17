@@ -1,0 +1,55 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Header from "~/components/nav/Header.astro";
+import MobileMenu from "~/components/nav/MobileMenu.astro";
+import CommandPalette from "~/components/nav/CommandPalette.astro";
+import Hero from "~/components/hero/Hero.astro";
+import ImpactStrip from "~/components/sections/ImpactStrip.astro";
+import Experience from "~/components/sections/Experience.astro";
+import Projects from "~/components/sections/Projects.astro";
+import Skills from "~/components/sections/Skills.astro";
+import About from "~/components/sections/About.astro";
+import Contact from "~/components/sections/Contact.astro";
+import Footer from "~/components/ui/Footer.astro";
+import { HERO_SIZES, LCP_LAYER_IDS, srcsetFor } from "~/components/hero/layers";
+---
+
+<BaseLayout>
+  {
+    /*
+    The sky layers are the LCP candidates. imagesizes must match the <img>'s
+    sizes exactly, or the preload fetches a different variant than the one the
+    image ends up using and the work is wasted.
+  */
+  }
+  <Fragment slot="head">
+    {
+      LCP_LAYER_IDS.map((id) => (
+        <link
+          rel="preload"
+          as="image"
+          type="image/avif"
+          imagesrcset={srcsetFor(id, "avif")}
+          imagesizes={HERO_SIZES}
+          fetchpriority="high"
+        />
+      ))
+    }
+  </Fragment>
+
+  <Header />
+  <MobileMenu />
+  <CommandPalette />
+
+  <main id="main">
+    <Hero />
+    <ImpactStrip />
+    <Experience />
+    <Projects />
+    <Skills />
+    <About />
+    <Contact />
+  </main>
+
+  <Footer />
+</BaseLayout>

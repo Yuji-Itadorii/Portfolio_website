@@ -1,0 +1,12 @@
+/* Single entrypoint. Order matters: Tailwind + design tokens, then the
+   semantic theme layer that maps them, then base element styles. */
+@import "./tokens.css";
+@import "./theme.css";
+@import "./base.css";
+
+/* Self-hosted variable fonts, latin subset only (~85-100 KB total).
+   Replaces the two render-blocking Google Fonts stylesheets and four
+   duplicated preconnects the old site shipped. */
+@import "@fontsource-variable/sora/index.css";
+@import "@fontsource-variable/inter/index.css";
+@import "@fontsource-variable/jetbrains-mono/index.css";

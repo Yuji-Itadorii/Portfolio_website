@@ -1,0 +1,209 @@
+---
+import { PUBLIC_WEB3FORMS_KEY } from "astro:env/client";
+import Button from "~/components/ui/Button.astro";
+import { profile } from "~/content";
+
+// No key configured (local dev, or a fork) — degrade to a plain mailto rather
+// than rendering a form that silently fails on submit.
+const hasKey = PUBLIC_WEB3FORMS_KEY.length > 0;
+---
+
+{
+  hasKey ? (
+    <form class="form" data-contact-form novalidate>
+      <input type="hidden" name="access_key" value={PUBLIC_WEB3FORMS_KEY} />
+      <input type="hidden" name="subject" value="New message from your portfolio" />
+      <input type="hidden" name="from_name" value="Portfolio contact form" />
+
+      {/* Honeypot. Web3Forms silently discards anything with this checked —
+          it returns success, which is correct: never tell a bot it was caught. */}
+      <label class="form__honeypot" aria-hidden="true">
+        Do not fill this out
+        <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" />
+      </label>
+
+      <div class="form__row">
+        <div class="field">
+          <label for="cf-name">Name</label>
+          <input
+            id="cf-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            aria-describedby="cf-name-error"
+          />
+          <p class="field__error" id="cf-name-error" data-error-for="name" />
+        </div>
+
+        <div class="field">
+          <label for="cf-email">Email</label>
+          <input
+            id="cf-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+            aria-describedby="cf-email-error"
+          />
+          <p class="field__error" id="cf-email-error" data-error-for="email" />
+        </div>
+      </div>
+
+      <div class="field">
+        {/* type="tel", not type="number". The old form used number, which
+            strips leading zeros and rejects "+" and spaces. */}
+        <label for="cf-phone">
+          Phone <span class="field__optional">(optional)</span>
+        </label>
+        <input id="cf-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" />
+      </div>
+
+      <div class="field">
+        <label for="cf-message">Message</label>
+        <textarea
+          id="cf-message"
+          name="message"
+          rows="5"
+          required
+          aria-describedby="cf-message-error"
+        />
+        <p class="field__error" id="cf-message-error" data-error-for="message" />
+      </div>
+
+      <div class="form__foot">
+        <Button id="cf-submit" type="submit" iconEnd="lucide:send">
+          Send message
+        </Button>
+        <p class="form__status" data-form-status role="status" aria-live="polite" />
+      </div>
+    </form>
+  ) : (
+    <div class="fallback">
+      <p>
+        The contact form isn't configured on this build. Email is just as good — I read everything.
+      </p>
+      <Button href={`mailto:${profile.email}`} icon="lucide:mail">
+        {profile.email}
+      </Button>
+    </div>
+  )
+}
+
+<style>
+  .form {
+    display: grid;
+    gap: 1.125rem;
+    max-width: 34rem;
+  }
+
+  .form__row {
+    display: grid;
+    gap: 1.125rem;
+  }
+
+  @media (min-width: 32rem) {
+    .form__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .field {
+    display: grid;
+    gap: 0.375rem;
+  }
+
+  .field label {
+    color: var(--text-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .field__optional {
+    color: var(--text-3);
+    font-weight: 400;
+  }
+
+  .field input,
+  .field textarea {
+    width: 100%;
+    padding: 0.625rem 0.8125rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface-1);
+    color: var(--text-1);
+    font: inherit;
+    font-size: var(--text-sm);
+    transition: border-color var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 7rem;
+  }
+
+  .field input:hover,
+  .field textarea:hover {
+    border-color: var(--text-3);
+  }
+
+  .field :global([aria-invalid="true"]) {
+    border-color: #dc2626;
+  }
+
+  .field__error {
+    color: #dc2626;
+    font-size: var(--text-xs);
+  }
+
+  .field__error:empty {
+    display: none;
+  }
+
+  /* Off-screen rather than display:none — some bots skip hidden inputs. */
+  .form__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .form__status {
+    font-size: var(--text-sm);
+  }
+
+  .form__status[data-state="success"] {
+    color: var(--accent);
+  }
+
+  .form__status[data-state="error"] {
+    color: #dc2626;
+  }
+
+  .fallback {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    max-width: var(--width-prose);
+  }
+
+  .fallback p {
+    color: var(--text-2);
+  }
+</style>
+
+<script>
+  import { initContactForm } from "./contact-form";
+
+  const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
+  if (form) initContactForm(form);
+</script>
