@@ -1,0 +1,55 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+#
+# NOTE: Render service types are immutable. The existing deployment is a Web
+# Service (it ran `node app.js`), and there is no in-place conversion to a
+# Static Site. See README.md for the swap procedure that preserves the
+# abhay-rawat.onrender.com subdomain.
+services:
+  - name: abhay-rawat
+    type: web
+    runtime: static
+    branch: main
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+
+    # Docs and CI changes can't affect the built output, so don't trigger a
+    # deploy for them.
+    buildFilter:
+      ignoredPaths:
+        - README.md
+        - docs/**
+        - .github/**
+        - tests/**
+        - lighthouserc.json
+        - playwright.config.ts
+
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      # Public by design (it ships in the client bundle), but kept out of git
+      # so forks don't inherit it. Set the value in the Render dashboard.
+      - key: PUBLIC_WEB3FORMS_KEY
+        sync: false
+
+    routes:
+      - type: rewrite
+        source: /resume
+        destination: /Abhay_Rawat_Resume.pdf
+
+    headers:
+      # Content-hashed or otherwise immutable assets.
+      - path: /hero/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /_astro/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=(), interest-cohort=()

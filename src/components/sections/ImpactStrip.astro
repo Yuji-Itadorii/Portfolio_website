@@ -1,0 +1,74 @@
+---
+import { metrics } from "~/content";
+---
+
+{
+  /*
+  The ten-second read. A recruiter who scrolls once and leaves should still
+  have seen four numbers with sources attached.
+*/
+}
+<section class="impact" aria-label="Impact highlights">
+  <div class="u-container">
+    <ul class="impact__grid">
+      {
+        metrics.map((metric) => (
+          <li class="impact__item">
+            <p class="impact__value u-mono-figure">{metric.value}</p>
+            <p class="impact__label">{metric.label}</p>
+            <p class="impact__detail">{metric.detail}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .impact {
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+    border-block: 1px solid var(--border);
+    background: var(--surface-1);
+  }
+
+  .impact__grid {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+
+  .impact__item {
+    position: relative;
+    padding-left: 1.125rem;
+  }
+
+  .impact__item::before {
+    content: "";
+    position: absolute;
+    inset-block: 0.2rem 0.6rem;
+    left: 0;
+    width: 2px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(to bottom, var(--accent-graphic), transparent);
+  }
+
+  .impact__value {
+    color: var(--text-1);
+    font-size: var(--text-2xl);
+    line-height: 1.05;
+  }
+
+  .impact__label {
+    margin-top: 0.25rem;
+    color: var(--accent);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .impact__detail {
+    margin-top: 0.5rem;
+    color: var(--text-3);
+    font-size: var(--text-xs);
+    line-height: 1.5;
+  }
+</style>

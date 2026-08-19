@@ -1,0 +1,74 @@
+/* Semantic theme tokens.
+   Components reference ONLY these — never a raw hex or a Tailwind ramp value.
+   Contrast ratios in the comments are measured against that theme's --surface-0. */
+
+@theme {
+  --color-surface-0: var(--surface-0);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text-1: var(--text-1);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-solid: var(--accent-solid);
+  --color-accent-on: var(--accent-on);
+  --color-accent-graphic: var(--accent-graphic);
+  --color-accent-wash: var(--accent-wash);
+}
+
+:root,
+[data-theme="light"] {
+  --surface-0: #faf9f7; /* page      */
+  --surface-1: #ffffff; /* cards     */
+  --surface-2: #f1efeb; /* wells, inputs */
+  --border: #dfdad2;
+  --border-strong: #c4bcb0;
+
+  --text-1: #17140f; /* headings — 16.5:1 */
+  --text-2: #433d33; /* body     —  9.4:1 */
+  --text-3: #6b6357; /* muted    —  5.1:1 */
+
+  /* The original brand orange (#ff6f00 / #ff760d) fails WCAG AA as text at
+     ~2.8:1. The hue survives as --accent-graphic for NON-TEXT use only;
+     anything readable resolves to the darker --accent. */
+  --accent: #c2410c; /* text, links, focus — 4.92:1 on --surface-0  ✅ AA  */
+  --accent-hover: #9a3412;
+  --accent-solid: #c2410c; /* button bg; --accent-on on it = 5.18:1  ✅ AA  */
+  --accent-on: #ffffff;
+  --accent-graphic: #f97316; /* rules, glows, timeline dots — never text     */
+  --accent-wash: #fff1e7;
+
+  --shadow-1: 0 1px 2px rgb(23 20 15 / 0.05), 0 1px 3px rgb(23 20 15 / 0.08);
+  --shadow-2: 0 4px 6px -1px rgb(23 20 15 / 0.07), 0 10px 20px -6px rgb(23 20 15 / 0.12);
+  --shadow-glow: 0 0 0 1px rgb(249 115 22 / 0.18), 0 8px 32px -8px rgb(249 115 22 / 0.28);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --surface-0: #0d1117;
+  --surface-1: #141a22;
+  --surface-2: #1c242e;
+  --border: #26303c;
+  --border-strong: #3a4756;
+
+  --text-1: #f2f5f8; /* 17.0:1 */
+  --text-2: #c3cbd5; /* 11.1:1 */
+  --text-3: #8b96a4; /*  5.6:1 */
+
+  --accent: #fb923c; /* 8.36:1 on --surface-0  ✅ AAA */
+  --accent-hover: #fdba74;
+  --accent-solid: #fb923c;
+  --accent-on: #0d1117; /* on --accent-solid = 8.36:1  ✅ AAA */
+  --accent-graphic: #f97316;
+  --accent-wash: #2a1b0f;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-2: 0 10px 30px -10px rgb(0 0 0 / 0.6);
+  --shadow-glow: 0 0 0 1px rgb(251 146 60 / 0.22), 0 8px 40px -8px rgb(251 146 60 / 0.22);
+
+  color-scheme: dark;
+}

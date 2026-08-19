@@ -1,0 +1,33 @@
+---
+import Section from "~/components/ui/Section.astro";
+import Reveal from "~/components/ui/Reveal.astro";
+import ExperienceItem from "./ExperienceItem.astro";
+import { experience } from "~/content";
+---
+
+<Section
+  id="work"
+  eyebrow="Experience"
+  title="Where I've shipped"
+  lede="Backend services in production at consumer scale, plus the tooling built around getting them there."
+>
+  <div class="timeline">
+    {
+      experience.map((role, index) => (
+        <Reveal index={index}>
+          <ExperienceItem
+            role={role}
+            current={role.end === "present"}
+            last={index === experience.length - 1}
+          />
+        </Reveal>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .timeline {
+    max-width: 52rem;
+  }
+</style>

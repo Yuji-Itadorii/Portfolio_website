@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Dark mode is driven by a `data-theme` attribute on <html>, set by the inline
+   no-flash script in BaseLayout before first paint — not by a media query. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  /* ── Type families ───────────────────────────────────────────────────── */
+  --font-display: "Sora Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "Cascadia Code", monospace;
+
+  /* ── Type scale — 1.25 major third, fluid between 360px and 1440px ───── */
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: clamp(1.125rem, 0.3vw + 1.05rem, 1.25rem);
+  --text-xl: clamp(1.375rem, 0.62vw + 1.22rem, 1.75rem);
+  --text-2xl: clamp(1.75rem, 1.25vw + 1.44rem, 2.5rem);
+  --text-3xl: clamp(2.25rem, 2.5vw + 1.63rem, 3.5rem);
+  --text-4xl: clamp(2.75rem, 5vw + 1.5rem, 5.5rem); /* h1 only */
+
+  /* ── Spacing ─────────────────────────────────────────────────────────── */
+  --spacing: 0.25rem;
+  --space-section: clamp(4rem, 9vw, 9rem);
+  --space-gutter: clamp(1.25rem, 4vw, 3rem);
+
+  /* ── Measure ─────────────────────────────────────────────────────────── */
+  --width-content: 68rem;
+  --width-prose: 38rem;
+
+  /* ── Radii ───────────────────────────────────────────────────────────── */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 999px;
+
+  /* ── Motion ──────────────────────────────────────────────────────────── */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.3, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: linear(0, 0.18 4%, 0.63 10%, 1.02 19%, 1.09 24%, 1.04 33%, 0.99 44%, 1);
+  --dur-fast: 140ms;
+  --dur-base: 260ms;
+  --dur-slow: 520ms;
+
+  /* ── Z-index — every layer named, so no ad-hoc numbers creep back in ─── */
+  --z-hero-bg: 0;
+  --z-hero-fg: 10;
+  --z-content: 20;
+  --z-sticky-nav: 60;
+  --z-mobile-menu: 70;
+  --z-palette: 80;
+  --z-toast: 90;
+
+  /* ── Layout constants ────────────────────────────────────────────────── */
+  --header-h: 4rem;
+}

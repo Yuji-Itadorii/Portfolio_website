@@ -1,0 +1,115 @@
+---
+import Section from "~/components/ui/Section.astro";
+import ContactForm from "./ContactForm.astro";
+import SocialLinks from "~/components/ui/SocialLinks.astro";
+import { profile } from "~/content";
+---
+
+<Section
+  id="contact"
+  eyebrow="Contact"
+  title="Let's talk"
+  lede="Open to interesting backend and applied-AI problems. Happy to talk shop either way."
+>
+  <div class="contact">
+    <ContactForm />
+
+    <aside class="contact__aside">
+      <h3 class="contact__subhead">Or reach me directly</h3>
+
+      <button class="copy" type="button" data-copy-email data-email={profile.email}>
+        <span class="copy__value">{profile.email}</span>
+        <span class="copy__hint" data-copy-hint>Copy</span>
+      </button>
+
+      <SocialLinks />
+    </aside>
+  </div>
+</Section>
+
+<style>
+  .contact {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  @media (min-width: 56rem) {
+    .contact {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  .contact__subhead {
+    margin-bottom: 0.875rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  .copy {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    max-width: 22rem;
+    padding: 0.75rem 0.9375rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .copy:hover {
+    border-color: var(--accent);
+  }
+
+  .copy__value {
+    color: var(--text-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+  }
+
+  .copy__hint {
+    flex: none;
+    color: var(--text-3);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .copy[data-copied] .copy__hint {
+    color: var(--accent);
+  }
+</style>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>("[data-copy-email]");
+  const hint = button?.querySelector<HTMLElement>("[data-copy-hint]");
+
+  button?.addEventListener("click", async () => {
+    const email = button.dataset.email;
+    if (!email || !hint) return;
+
+    try {
+      await navigator.clipboard.writeText(email);
+      hint.textContent = "Copied";
+      button.dataset.copied = "";
+    } catch {
+      // Clipboard is blocked in insecure contexts and some in-app browsers.
+      // Fall back to opening the mail client rather than failing silently.
+      window.location.href = `mailto:${email}`;
+      return;
+    }
+
+    window.setTimeout(() => {
+      hint.textContent = "Copy";
+      delete button.dataset.copied;
+    }, 1800);
+  });
+</script>

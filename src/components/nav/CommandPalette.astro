@@ -1,0 +1,227 @@
+---
+import { Icon } from "astro-icon/components";
+import { profile, sections, socials } from "~/content";
+import { RESUME_PATH, resumeExists } from "~/lib/resume";
+
+interface Command {
+  id: string;
+  label: string;
+  hint: string;
+  icon: string;
+  action: "scroll" | "theme" | "copy-email" | "open";
+  value: string;
+}
+
+const commands: Command[] = [
+  ...sections.map<Command>((section) => ({
+    id: `go-${section.id}`,
+    label: `Go to ${section.label}`,
+    hint: "Navigate",
+    icon: "lucide:corner-down-left",
+    action: "scroll",
+    value: section.id,
+  })),
+  {
+    id: "theme",
+    label: "Toggle theme",
+    hint: "Appearance",
+    icon: "lucide:sun",
+    action: "theme",
+    value: "",
+  },
+  {
+    id: "copy-email",
+    label: "Copy email address",
+    hint: "Contact",
+    icon: "lucide:copy",
+    action: "copy-email",
+    value: profile.email,
+  },
+  ...(resumeExists
+    ? [
+        {
+          id: "resume",
+          label: "Download resume",
+          hint: "Contact",
+          icon: "lucide:download",
+          action: "open" as const,
+          value: RESUME_PATH,
+        },
+      ]
+    : []),
+  ...socials
+    .filter((social) => !social.href.startsWith("mailto:"))
+    .map<Command>((social) => ({
+      id: `open-${social.label.toLowerCase()}`,
+      label: `Open ${social.label}`,
+      hint: social.handle,
+      icon: social.icon,
+      action: "open",
+      value: social.href,
+    })),
+];
+---
+
+{
+  /*
+  Cmd/Ctrl-K palette. Native <dialog>, no dependencies. It doubles as a genuine
+  keyboard-navigation affordance, so it isn't purely decorative.
+*/
+}
+<dialog class="palette" data-palette aria-label="Command palette">
+  <div class="palette__search">
+    <Icon name="lucide:search" aria-hidden="true" />
+    <input
+      type="text"
+      data-palette-input
+      placeholder="Jump to a section, copy my email…"
+      aria-label="Search commands"
+      aria-controls="palette-results"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <kbd>Esc</kbd>
+  </div>
+
+  <ul class="palette__results" id="palette-results" data-palette-results role="listbox">
+    {
+      commands.map((command, index) => (
+        <li>
+          <button
+            class="command"
+            type="button"
+            role="option"
+            aria-selected={index === 0 ? "true" : "false"}
+            data-command
+            data-action={command.action}
+            data-value={command.value}
+            data-search={command.label.toLowerCase()}
+          >
+            <Icon name={command.icon} class="command__icon" aria-hidden="true" />
+            <span class="command__label">{command.label}</span>
+            <span class="command__hint">{command.hint}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="palette__empty" data-palette-empty hidden>No matching commands.</p>
+</dialog>
+
+<style>
+  .palette {
+    width: min(34rem, calc(100vw - 2rem));
+    max-height: min(28rem, 80dvh);
+    padding: 0;
+    margin-top: 12vh;
+    margin-inline: auto;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--surface-1);
+    color: var(--text-2);
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+  }
+
+  .palette::backdrop {
+    background: rgb(0 0 0 / 0.4);
+    backdrop-filter: blur(3px);
+  }
+
+  .palette__search {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .palette__search :global(svg) {
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--text-3);
+    flex: none;
+  }
+
+  .palette__search input {
+    flex: 1;
+    border: none;
+    background: none;
+    color: var(--text-1);
+    font: inherit;
+    font-size: var(--text-sm);
+    outline: none;
+  }
+
+  .palette__search kbd {
+    flex: none;
+    padding: 0.125rem 0.375rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+  }
+
+  .palette__results {
+    max-height: 21rem;
+    padding: 0.375rem;
+    overflow-y: auto;
+  }
+
+  .command {
+    display: flex;
+    align-items: center;
+    gap: 0.6875rem;
+    width: 100%;
+    padding: 0.5625rem 0.6875rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--text-2);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .command[aria-selected="true"] {
+    background: var(--accent-wash);
+    color: var(--accent);
+  }
+
+  .command__icon {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    color: var(--text-3);
+  }
+
+  .command[aria-selected="true"] .command__icon {
+    color: var(--accent);
+  }
+
+  .command__label {
+    flex: 1;
+    font-size: var(--text-sm);
+  }
+
+  .command__hint {
+    flex: none;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+  }
+
+  .palette__empty {
+    padding: 1.5rem 1rem;
+    color: var(--text-3);
+    font-size: var(--text-sm);
+    text-align: center;
+  }
+</style>
+
+<script>
+  import { initCommandPalette } from "./command-palette";
+
+  initCommandPalette();
+</script>

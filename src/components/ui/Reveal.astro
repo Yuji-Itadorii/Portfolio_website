@@ -1,0 +1,49 @@
+---
+interface Props {
+  /** Stagger index — multiplies the delay. */
+  index?: number;
+  as?: "div" | "li" | "article" | "section";
+  class?: string;
+}
+
+// Annotated explicitly: with a dynamic `Tag` the compiler doesn't infer the
+// implicit Props link, and `noUnusedLocals` then flags the interface.
+const { index = 0, as: Tag = "div", class: className }: Props = Astro.props;
+---
+
+{
+  /*
+  Scroll reveal with zero JavaScript.
+
+  Uses the native `animation-timeline: view()` where supported. Where it isn't
+  (Firefox stable, still behind a flag), the @supports guard simply never
+  applies and the content is plainly visible — which is a perfectly good
+  outcome and needs no fallback implementation.
+*/
+}
+<Tag class:list={["reveal", className]} style={`--reveal-index:${index}`}>
+  <slot />
+</Tag>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .reveal {
+        animation: reveal-in linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 22%;
+      }
+    }
+  }
+
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      translate: 0 1.75rem;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+</style>

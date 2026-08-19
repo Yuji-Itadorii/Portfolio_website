@@ -1,0 +1,52 @@
+Abhay Rawat Email: abhay892rawat@gmail.com
+LinkedIn: in/abhay2002rawat/ Mobile: +91-730-9254-985
+Github: github.com/Yuji-Itadorii
+Education
+• National Institute of Technology, Kurukshetra 2021 – 2025 — Haryana, India
+Information Technology; CGPA: 8.62
+• Maharishi Vidya Mandir, Sitapur 2019 – 2020 — Uttar Pradesh, India
+CBSE (Class XII); Aggregate: 95%
+Skills Summary
+• Languages: JavaScript (Node.js), Java, C++, SQL
+• Backend & Frameworks: Node.js, Express.js, Spring Boot, REST APIs
+• Databases: MongoDB, SQL Databases, Cassandra, Redis
+• Architecture: Microservices Architecture, Rule Engines, MVC Architecture, System Design
+• DevOps & Tools: Docker, Git, Claude, Cursor
+• AI/ML & Automation: LangChain, LangGraph, AI Agents, RAG, NLP, Generative AI, Hugging Face
+Work Experience
+• Paytm — Software Engineer — India Jun 2025 - Present
+◦ Architect, develop, and maintain scalable backend services using Node.js, Express.js, and Java Spring Boot for
+high-traffic consumer services.
+◦ Built an AI-powered agentic SDLC workflow using Claude, Cursor, Jira, and Confluence MCP servers, reducing
+feature delivery time by 35% and streamlining automated QA handoff generation.
+◦ Took end-to-end ownership of Cancellation Protect and Travel Insurance services within Paytm Travel, including
+development, maintenance, and production support.
+◦ Migrated pricing microservice for Cancellation Protect and Travel Insurance across Paytm Paytm Travel,
+reducing deployment costs by 10% and improving API response time by 20%.
+• Paytm — Software Engineer Intern — India Jan 2025 - Jun 2025
+◦ Developed and optimized backend services using Node.js and Express.js, ensuring high performance and
+scalability.
+◦ Worked with Drools Rule Engine to streamline dynamic decision-making processes in financial transactions.
+◦ Designed and deployed automated alerting for API and service failures, improving system reliability and
+production monitoring.
+• MentorAide — Software Developer Intern — Remote Jan 2024 - Jul 2024
+◦ Spearheaded the development and maintenance of scalable web applications using React and Redux, ensuring
+robust user interfaces and optimal performance.
+◦ Built LSTM and ARIMA-based forecasting pipelines for equity price prediction, resulting in up to 11.45%
+simulated portfolio returns (LSTM) compared to 7.45% using ARIMA.
+◦ Utilized a comprehensive tech stack including React, Redux, Python, and TensorFlow.
+Projects
+• NeuroHub (LLM-powered Learning Management System) Personal Project - Jun 2024
+◦ Collaborated with a team of 5 members to develop NeuroHub, a comprehensive learning management system.
+◦ Integrated AI-generated assignment detection, achieving a 98% accuracy rate, along with a face detection
+system.
+◦ Designed user-friendly interfaces and enhanced user experience, resulting in a 30% increase in user engagement.
+◦ Tech Stack: React, Ant Design, Figma, Microservices, Node.js, JWT, Hugging Face, Transformers, Python,
+TensorFlow, AWS.
+◦ Link: GitHub
+Achievements
+• Awarded a Certificate of Recognition at Paytm for exceptional performance and contributions.
+• Top performer in CSI RAIT’s Open Code 2022 open-source contribution program.
+• Solved 1000+ quality Data Structures and Algorithms problems on platforms such as LeetCode and GeeksforGeeks.
+• Selected for the Smart India Hackathon 2023 at the college level.
+• Finalist of Hackshetra, a 24-hour-long hackathon.

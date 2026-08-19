@@ -128,3 +128,17 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Astro
+dist/
+.astro/
+
+# Local env — never commit. See .env.example.
+.env
+.env.local
+.env.*.local
+
+# Test + audit output
+playwright-report/
+test-results/
+.lighthouseci/

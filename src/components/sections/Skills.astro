@@ -1,0 +1,84 @@
+---
+import { Icon } from "astro-icon/components";
+import Section from "~/components/ui/Section.astro";
+import Reveal from "~/components/ui/Reveal.astro";
+import Chip from "~/components/ui/Chip.astro";
+import { skillGroups } from "~/content";
+---
+
+<Section
+  id="skills"
+  eyebrow="Toolkit"
+  title="What I work with"
+  lede="Grouped by what they're for, rather than as an undifferentiated wall of logos."
+>
+  <div class="groups">
+    {
+      skillGroups.map((group, index) => (
+        <Reveal index={index}>
+          <section class="group" aria-labelledby={`skills-${group.id}`}>
+            <h3 class="group__label" id={`skills-${group.id}`}>
+              <Icon name={group.glyph} class="group__glyph" aria-hidden="true" />
+              {group.label}
+            </h3>
+            <ul class="group__list">
+              {group.skills.map((skill) => (
+                <li>
+                  <Chip
+                    label={skill.name}
+                    icon={skill.icon.kind === "iconify" ? skill.icon.name : undefined}
+                    note={skill.note}
+                    emphasis={skill.level === "core"}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        </Reveal>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .groups {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  }
+
+  .groups > :global(*) {
+    display: flex;
+  }
+
+  .group {
+    flex: 1;
+    padding: 1.375rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-1);
+  }
+
+  .group__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  .group__glyph {
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--accent);
+  }
+
+  .group__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4375rem;
+  }
+</style>

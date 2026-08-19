@@ -1,0 +1,57 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Button from "~/components/ui/Button.astro";
+import Footer from "~/components/ui/Footer.astro";
+---
+
+<BaseLayout title="Page not found" description="That page doesn't exist." noindex>
+  <main id="main" class="notfound">
+    <div class="u-container notfound__inner">
+      <p class="notfound__code u-mono-figure">404</p>
+      <h1 class="notfound__title">This page doesn't exist</h1>
+      <p class="notfound__body u-prose">
+        The link may be out of date, or I may have moved something. Everything worth seeing is on
+        the home page.
+      </p>
+      <div class="notfound__actions">
+        <Button href="/" icon="lucide:corner-down-left">Back home</Button>
+        <Button href="/#contact" variant="outline">Tell me what broke</Button>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .notfound {
+    display: grid;
+    place-items: center;
+    min-height: 80svh;
+    padding-block: var(--space-section);
+  }
+
+  .notfound__code {
+    color: var(--accent);
+    font-size: var(--text-2xl);
+    letter-spacing: 0.08em;
+  }
+
+  .notfound__title {
+    margin-top: 0.5rem;
+    font-size: var(--text-3xl);
+  }
+
+  .notfound__body {
+    margin-top: 1rem;
+    color: var(--text-3);
+    font-size: var(--text-lg);
+  }
+
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+</style>

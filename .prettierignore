@@ -1,0 +1,12 @@
+dist/
+.astro/
+node_modules/
+public/hero/
+playwright-report/
+test-results/
+.lighthouseci/
+package-lock.json
+*.png
+*.webp
+*.avif
+*.pdf
