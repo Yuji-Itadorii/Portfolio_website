@@ -13,40 +13,42 @@ import { HERO_LAYERS, HERO_SIZES, isLcpLayer, srcsetFor } from "./layers";
 */
 }
 <div class="hero-stage" data-parallax aria-hidden="true">
-  {
-    HERO_LAYERS.map((layer, index) => (
-      <div
-        class="hero-layer"
-        data-dx={layer.dx}
-        data-dy={layer.dy}
-        data-scale={layer.scale}
-        data-mobile={layer.mobile}
-        style={`--z:${index}; --overscan:${layer.overscan}%`}
-      >
-        {/*
-          Every layer is above the fold, so lazy-loading them would be an
-          own-goal — except the two dropped on mobile, where `lazy` inside a
-          display:none ancestor means the fetch never happens at all.
+  <div class="hero-stage__zoom">
+    {
+      HERO_LAYERS.map((layer, index) => (
+        <div
+          class="hero-layer"
+          data-dx={layer.dx}
+          data-dy={layer.dy}
+          data-scale={layer.scale}
+          data-mobile={layer.mobile}
+          style={`--z:${index}; --overscan:${layer.overscan}%`}
+        >
+          {/*
+            Every layer is above the fold, so lazy-loading them would be an
+            own-goal — except the two dropped on mobile, where `lazy` inside a
+            display:none ancestor means the fetch never happens at all.
 
-          The LCP candidates (the sky pair) decode synchronously so the first
-          paint includes them; the rest stay async, off the critical path.
-        */}
-        <picture>
-          <source type="image/avif" srcset={srcsetFor(layer.id, "avif")} sizes={HERO_SIZES} />
-          <source type="image/webp" srcset={srcsetFor(layer.id, "webp")} sizes={HERO_SIZES} />
-          <img
-            src={`/hero/${layer.id}-1920.png`}
-            alt=""
-            width="1920"
-            height="1080"
-            decoding={isLcpLayer(layer.id) ? "sync" : "async"}
-            loading={layer.mobile === "drop" ? "lazy" : "eager"}
-            fetchpriority={isLcpLayer(layer.id) ? "high" : "auto"}
-          />
-        </picture>
-      </div>
-    ))
-  }
+            The LCP candidates (the sky pair) decode synchronously so the first
+            paint includes them; the rest stay async, off the critical path.
+          */}
+          <picture>
+            <source type="image/avif" srcset={srcsetFor(layer.id, "avif")} sizes={HERO_SIZES} />
+            <source type="image/webp" srcset={srcsetFor(layer.id, "webp")} sizes={HERO_SIZES} />
+            <img
+              src={`/hero/${layer.id}-1920.png`}
+              alt=""
+              width="1920"
+              height="1080"
+              decoding={isLcpLayer(layer.id) ? "sync" : "async"}
+              loading={layer.mobile === "drop" ? "lazy" : "eager"}
+              fetchpriority={isLcpLayer(layer.id) ? "high" : "auto"}
+            />
+          </picture>
+        </div>
+      ))
+    }
+  </div>
 </div>
 
 <style>
@@ -57,6 +59,18 @@ import { HERO_LAYERS, HERO_SIZES, isLcpLayer, srcsetFor } from "./layers";
     overflow: clip;
     contain: layout paint;
     background: var(--surface-2);
+  }
+
+  .hero-stage__zoom {
+    position: absolute;
+    inset: 0;
+    /* Each layer's artwork thins out toward its own outer edge, so at 1:1
+       scale the sparsest edges land exactly on the viewport edges and show
+       bare background through the gaps. Zooming this inner wrapper in trades
+       that outer, sparsest band for denser interior content instead — it's a
+       separate element from .hero-stage so the scale can't inflate the clip
+       boundary along with the content. */
+    transform: scale(1.15);
   }
 
   .hero-layer {
@@ -70,7 +84,11 @@ import { HERO_LAYERS, HERO_SIZES, isLcpLayer, srcsetFor } from "./layers";
     position: absolute;
     inset-block: 0;
     /* Bleed the image past both edges so a translating layer never exposes
-       the stage background behind it. */
+       the stage background behind it. Overrides the global `img { max-width:
+       100% }` reset (src/styles/base.css), which otherwise clamps this back
+       to exactly 100% — killing the bleed and leaving the image shifted left
+       by the `left` offset with a gap on the right. */
+    max-width: none;
     left: calc(-1 * var(--overscan));
     width: calc(100% + 2 * var(--overscan));
     height: 100%;
@@ -79,6 +97,14 @@ import { HERO_LAYERS, HERO_SIZES, isLcpLayer, srcsetFor } from "./layers";
   }
 
   @media (max-width: 48rem) {
+    .hero-stage__zoom {
+      /* The desktop zoom exists to hide sparse artwork at the outer edges;
+         the mobile layout below already fits each layer to the viewport
+         with object-fit: contain, so it doesn't have that gap and the zoom
+         would just crop the scene needlessly. */
+      transform: none;
+    }
+
     .hero-layer[data-mobile="drop"] {
       display: none;
     }
